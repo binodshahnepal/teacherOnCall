@@ -1,0 +1,324 @@
+:root {
+  color: #17211d;
+  background: #eef2ef;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+}
+
+.sidebar {
+  background: #10231e;
+  color: #f5faf7;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 42px;
+}
+
+.sidebar h1,
+.topbar h2,
+.detail-panel h3,
+.ops-grid h3 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.sidebar h1 {
+  font-size: 30px;
+  line-height: 1.05;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #5d7f72;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.sidebar .eyebrow {
+  color: #98d9c2;
+}
+
+nav {
+  display: grid;
+  gap: 8px;
+}
+
+nav a {
+  min-height: 42px;
+  color: #d6ebe3;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+nav a.active,
+nav a:hover {
+  background: #21443a;
+  color: white;
+}
+
+.workspace {
+  padding: 28px;
+  display: grid;
+  gap: 22px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.topbar h2 {
+  font-size: 28px;
+}
+
+.metrics {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.metrics span,
+.chips span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid #c9d7d0;
+  border-radius: 8px;
+  background: #f8fbf9;
+  font-weight: 700;
+}
+
+.search-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 220px;
+  gap: 14px;
+}
+
+label {
+  display: grid;
+  gap: 7px;
+  color: #40534c;
+  font-weight: 800;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #bfcec7;
+  border-radius: 8px;
+  background: white;
+  color: #17211d;
+  padding: 11px 12px;
+}
+
+textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1.4fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.tutor-list {
+  display: grid;
+  gap: 12px;
+}
+
+.tutor-card {
+  text-align: left;
+  border: 1px solid #c8d6cf;
+  border-radius: 8px;
+  background: #f9fbfa;
+  padding: 16px;
+  display: grid;
+  gap: 8px;
+  color: #41544d;
+  cursor: pointer;
+}
+
+.tutor-card.selected {
+  border-color: #17785d;
+  box-shadow: 0 0 0 3px rgba(23, 120, 93, 0.14);
+}
+
+.card-header,
+.profile-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.card-header strong {
+  color: #15251f;
+  font-size: 18px;
+}
+
+.price {
+  color: #13654f;
+  font-weight: 900;
+}
+
+.detail-panel,
+.ops-grid article {
+  border: 1px solid #c8d6cf;
+  border-radius: 8px;
+  background: white;
+  padding: 20px;
+}
+
+.detail-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.profile-head h3 {
+  font-size: 26px;
+}
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #815b12;
+  font-weight: 900;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.booking-form {
+  display: grid;
+  gap: 14px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  gap: 12px;
+}
+
+.primary {
+  min-height: 46px;
+  border: 0;
+  border-radius: 8px;
+  background: #17785d;
+  color: white;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.success {
+  margin: 0;
+  color: #126448;
+  font-weight: 800;
+}
+
+.ops-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.message {
+  margin: 12px 0 0;
+  padding: 12px;
+  border-radius: 8px;
+  background: #eef5f1;
+}
+
+.message.tutor {
+  background: #fff4df;
+}
+
+dl {
+  margin: 14px 0 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+dl div {
+  border: 1px solid #d6e0db;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+dt {
+  color: #52675f;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+dd {
+  margin: 4px 0 0;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+@media (max-width: 880px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    gap: 20px;
+  }
+
+  nav,
+  .topbar,
+  .metrics {
+    justify-content: flex-start;
+  }
+
+  nav,
+  .topbar,
+  .content-grid,
+  .ops-grid,
+  .search-row {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    display: grid;
+  }
+}

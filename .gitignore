@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Build folders
+bin/
+obj/
+build/
+dist/
+
+# Node
+node_modules/
+
+# Flutter
+.flutter-plugins
+.flutter-plugins-dependencies
+.dart_tool/
+.packages
+git status
+
+
+
+
