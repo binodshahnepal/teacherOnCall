@@ -1,28 +1,13 @@
-# macOS
-.DS_Store
-
-# Visual Studio / VS Code
-.vs/
-.vscode/
-*.user
-*.suo
-
-# Build folders
 bin/
 obj/
-build/
-dist/
+.vs/
+.dotnet-home/
+.tools/
 
-# Node
-node_modules/
+*.user
+*.suo
+*.db
+*.sqlite
+*.pptx
 
-# Flutter
-.flutter-plugins
-.flutter-plugins-dependencies
-.dart_tool/
-.packages
-git status
-
-
-
-
+appsettings.Development.json
