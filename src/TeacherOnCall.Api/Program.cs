@@ -1,3 +1,4 @@
+using Npgsql;
 using TeacherOnCall.Api;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +29,36 @@ app.MapGet("/", () => Results.Ok(new
         "/api/admin/dashboard"
     }
 }));
+
+app.MapGet("/api/health/database", async (IConfiguration configuration) =>
+{
+    var connectionString = configuration.GetConnectionString("DefaultConnection");
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        return Results.Problem("DefaultConnection is not configured.", statusCode: StatusCodes.Status503ServiceUnavailable);
+    }
+
+    try
+    {
+        await using var connection = new NpgsqlConnection(connectionString);
+        await connection.OpenAsync();
+        await using var command = new NpgsqlCommand("select current_database(), current_user, version()", connection);
+        await using var reader = await command.ExecuteReaderAsync();
+        await reader.ReadAsync();
+
+        return Results.Ok(new
+        {
+            status = "ready",
+            database = reader.GetString(0),
+            user = reader.GetString(1),
+            version = reader.GetString(2)
+        });
+    }
+    catch (Exception exception)
+    {
+        return Results.Problem(exception.Message, statusCode: StatusCodes.Status503ServiceUnavailable);
+    }
+});
 
 app.MapGet("/api/tutors", (
     TeacherOnCallStore store,

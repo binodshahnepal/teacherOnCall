@@ -1,4 +1,4 @@
-import { FormEvent, ReactNode, useEffect, useMemo, useState } from "react";
+import { FormEvent, lazy, ReactNode, Suspense, useMemo, useState } from "react";
 import {
   ArrowUpRight,
   BadgeCheck,
@@ -27,6 +27,16 @@ import {
 } from "lucide-react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
+
+const LandingScene3D = lazy(() =>
+  import("./LandingScene3D").then((module) => ({ default: module.LandingScene3D }))
+);
+const SectionScene3D = lazy(() =>
+  import("./SectionScene3D").then((module) => ({ default: module.SectionScene3D }))
+);
+const SignupScene3D = lazy(() =>
+  import("./SignupScene3D").then((module) => ({ default: module.SignupScene3D }))
+);
 
 type Tutor = {
   id: string;
@@ -161,30 +171,6 @@ const money = new Intl.NumberFormat("en-NP", {
   maximumFractionDigits: 0
 });
 
-const heroSlides = [
-  {
-    title: "Find the tutor your child actually needs.",
-    text:
-      "Compare verified online and home tutors for school support, SEE, +2, IELTS, and skill learning.",
-    image: "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=2400&q=88",
-    label: "School support"
-  },
-  {
-    title: "Book focused exam help before confidence drops.",
-    text:
-      "Match with tutors who understand learner goals, parent expectations, local schedules, and exam pressure.",
-    image: "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=2400&q=88",
-    label: "Exam preparation"
-  },
-  {
-    title: "Online or home tuition, organized in one place.",
-    text:
-      "Request a class, keep the meeting link or home tuition details, and track payment status clearly.",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=2400&q=88",
-    label: "Online and home"
-  }
-];
-
 function App() {
   const [view, setView] = useState("landing");
   const [signupRole, setSignupRole] = useState<"student" | "tutor">("student");
@@ -298,6 +284,14 @@ function App() {
             <ShieldCheck size={18} /> Admin
           </button>
         </nav>
+        {view === "signup" && (
+          <div className="sidebar-signup-scene">
+            <Suspense fallback={null}>
+              <SignupScene3D />
+            </Suspense>
+            <span><ShieldCheck size={15} /> Live matching</span>
+          </div>
+        )}
         <div className="sidebar-card">
           <span>Live MVP</span>
           <strong>3 tutors, 2 bookings, 1 payment recorded</strong>
@@ -396,181 +390,190 @@ function Landing({
   onStudentSignup: () => void;
   onTutorSignup: () => void;
 }) {
-  const [activeSlide, setActiveSlide] = useState(0);
-  const slide = heroSlides[activeSlide];
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActiveSlide((current) => (current + 1) % heroSlides.length);
-    }, 5500);
-
-    return () => window.clearInterval(timer);
-  }, []);
-
   return (
     <>
-      <section className="landing-hero">
-        <div className="hero-bg-stack" aria-hidden="true">
-          {heroSlides.map((item, index) => (
-            <span
-              key={item.label}
-              className={activeSlide === index ? "active" : ""}
-              style={{ backgroundImage: `url("${item.image}")` }}
-            />
-          ))}
-        </div>
-        <div className="hero-copy">
-          <p className="brand-word">Teacher on Call</p>
-          <span className="slide-label">{slide.label}</span>
-          <h3>{slide.title}</h3>
-          <p>{slide.text}</p>
-          <button className="hero-cta" onClick={onStart}>
-            Get Started <ArrowUpRight size={20} />
-          </button>
-        </div>
-        <div className="hero-slider-controls" aria-label="Hero background slides">
-          {heroSlides.map((item, index) => (
-            <button
-              key={item.label}
-              className={activeSlide === index ? "active" : ""}
-              onClick={() => setActiveSlide(index)}
-              aria-label={`Show ${item.label} slide`}
-            >
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              {item.label}
-            </button>
-          ))}
-        </div>
-      </section>
-      <section className="match-lab">
-        <div className="match-lab-head">
-          <p className="eyebrow">Find your match</p>
-          <h3>A guided tutor match, not a directory dump.</h3>
-          <p>Choose a goal and Teacher on Call organizes the next step around subject, mode, location, budget, and trust signals.</p>
-        </div>
-        <div className="match-lab-grid">
-          <div className="match-card primary-match">
-            <div className="match-progress">
-              <span className="active">Goal</span>
-              <span>Subject</span>
-              <span>Tutor</span>
-            </div>
-          <label>
-            What does the learner need?
-            <CustomSelect value="Mathematics" options={["Mathematics", "Science", "English", "IELTS", "Programming"]} />
-          </label>
-            <div className="topic-chips elevated">
-              <button type="button">SEE</button>
-              <button type="button">+2 Science</button>
-              <button type="button">IELTS</button>
-              <button type="button">Home tuition</button>
-            </div>
-            <button className="finder-action" onClick={onStart}>Show best matches <ArrowUpRight size={18} /></button>
-          </div>
-          <div className="match-insights">
-            <div><UserCheck size={20} /><strong>3</strong><span>verified-ready tutors</span></div>
-            <div><CalendarCheck size={20} /><strong>2</strong><span>booking flows seeded</span></div>
-            <div><Banknote size={20} /><strong>15%</strong><span>platform fee modeled</span></div>
-            <div><Globe2 size={20} /><strong>Online + Home</strong><span>tuition support</span></div>
+      <section className="standard-hero">
+        <div className="hero-intent">
+          <p className="eyebrow">Trusted online and home tutors</p>
+          <h3>Find the right tutor for school, exams, and confidence.</h3>
+          <p>
+            Browse verified tutor profiles, compare price and availability, then request a lesson
+            or interview before you book.
+          </p>
+          <div className="hero-actions">
+            <button className="primary" onClick={onStart}><Search size={18} /> Find a tutor</button>
+            <button className="secondary" onClick={onTutorSignup}>Become a tutor</button>
           </div>
         </div>
+        <Suspense fallback={<div className="landing-scene-canvas scene-loading" aria-hidden="true" />}>
+          <LandingScene3D />
+        </Suspense>
       </section>
-      <section className="subject-showcase upgraded">
+
+      <section className="landing-search-panel" aria-label="Tutor search filters">
+        <label>
+          Subject
+          <div className="input-with-icon">
+            <Search size={18} />
+            <input placeholder="Math, IELTS, Biology" />
+          </div>
+        </label>
+        <label>
+          Level
+          <CustomSelect value="SEE / +2" options={["SEE / +2", "Primary", "Secondary", "IELTS", "Adult learner"]} />
+        </label>
+        <label>
+          Mode
+          <CustomSelect value="Online or home" options={["Online or home", "Online", "Home tuition"]} />
+        </label>
+        <label>
+          Budget
+          <CustomSelect value="Any budget" options={["Any budget", "Up to NPR 1,200", "NPR 1,200-1,800", "NPR 1,800+"]} />
+        </label>
+        <button className="primary" onClick={onStart}>Show tutors</button>
+      </section>
+
+      <section className="trust-row">
+        <span><strong>Verified</strong> tutor profiles</span>
+        <span><strong>Online + home</strong> lesson options</span>
+        <span><strong>Request</strong> a lesson or interview</span>
+        <span><strong>Track</strong> bookings and payments</span>
+      </section>
+
+      <section className="landing-section">
         <div className="section-heading split">
           <div>
-            <p className="eyebrow">Popular goals</p>
-            <h3>Start with what the learner needs most.</h3>
+            <p className="eyebrow">Popular subjects</p>
+            <h3>Start with the learner's goal.</h3>
           </div>
-          <button className="text-link compact" onClick={onStart}>Explore tutors</button>
+          <button className="text-link compact" onClick={onStart}>View all tutors</button>
         </div>
-        <div className="subject-grid">
+        <div className="category-grid">
           {[
-            ["Mathematics", "SEE algebra, +2 calculus", "NPR 1,400/hr"],
-            ["Science", "Chemistry, biology, physics", "NPR 1,300/hr"],
-            ["English", "School support, IELTS", "NPR 1,200/hr"],
-            ["Programming", "Python, JavaScript basics", "Coming next"],
-            ["Home tuition", "Kathmandu valley support", "Verified tutors"],
-            ["Exam rescue", "Focused trial sessions", "This week"]
-          ].map(([title, detail, meta]) => (
-            <button className={`subject-tile subject-${title.toLowerCase().split(" ")[0].replace("+", "plus")}`} key={title} onClick={onStart}>
-              <span className="subject-icon">{title[0]}</span>
+            ["Mathematics", "SEE algebra, +2 calculus", "18 tutors", "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=700&q=82"],
+            ["Science", "Chemistry, biology, physics", "12 tutors", "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=700&q=82"],
+            ["English", "School support, IELTS", "9 tutors", "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=700&q=82"],
+            ["Home tuition", "Kathmandu valley tutors", "Online or home", "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=700&q=82"]
+          ].map(([title, detail, meta, image]) => (
+            <button key={title} className="category-card rich-category" onClick={onStart}>
+              <img src={image} alt="" />
+              <span>{title[0]}</span>
               <strong>{title}</strong>
-              <span>{detail}</span>
+              <small>{detail}</small>
               <em>{meta}</em>
             </button>
           ))}
         </div>
       </section>
-      <section className="proof-strip">
-        <span><strong>SEE</strong> exam support</span>
-        <span><strong>IELTS</strong> preparation</span>
-        <span><strong>Online</strong> classes</span>
-        <span><strong>Home</strong> tuition</span>
-      </section>
-      <section className="guided-strip">
-        <div>
-          <p className="eyebrow">Guided matching</p>
-          <h3>Answer a few questions, then compare tutors with confidence.</h3>
-        </div>
-        <div className="mini-flow">
-          <span>1. Goal</span>
-          <span>2. Subject</span>
-          <span>3. Budget</span>
-          <span>4. Tutor match</span>
-        </div>
-      </section>
-      <section className="ops-grid three">
-        <InfoCard icon={<Users />} title="For students" text="Save tutors, request lessons, view session links, and track payment status." />
-        <InfoCard icon={<UserCheck />} title="For tutors" text="Manage profile, booking requests, upcoming sessions, and earnings." />
-        <InfoCard icon={<LayoutDashboard />} title="For admins" text="Verify tutors, monitor booking flow, and review revenue operations." />
-      </section>
-      <section className="featured-tutors">
-        <div className="section-heading">
-          <p className="eyebrow">Tutor proof</p>
-          <h3>Profiles designed for fast parent decisions.</h3>
+
+      <section className="landing-section featured-tutors standard-featured">
+        <Suspense fallback={null}>
+          <SectionScene3D />
+        </Suspense>
+        <div className="section-heading split">
+          <div>
+            <p className="eyebrow">Recommended tutors</p>
+            <h3>Compare tutors by rating, price, lessons, and next slot.</h3>
+          </div>
+          <button className="text-link compact" onClick={onStart}>Explore marketplace</button>
         </div>
         <div className="featured-tutor-grid">
           {tutors.map((tutor) => (
             <article className="featured-tutor" key={tutor.id}>
               <div className="featured-photo">
                 <img src={tutor.photo} alt="" />
-                <span><Star size={15} /> {tutor.rating || "New"}</span>
+                <span><Star size={15} /> {tutor.rating || "New"} ({tutor.reviewCount})</span>
               </div>
-              <div>
-                <span>{tutor.verificationStatus}</span>
+              <div className="featured-profile-copy">
+                <span className="verified-line">
+                  {tutor.verificationStatus === "Verified" ? <BadgeCheck size={17} /> : <Clock3 size={17} />}
+                  {tutor.verificationStatus} tutor
+                </span>
                 <h4>{tutor.fullName}</h4>
                 <p>{tutor.headline}</p>
-                <strong>{money.format(tutor.hourlyRate)}/hr · {tutor.nextSlot}</strong>
-                <button onClick={onStart}>View tutor <ArrowUpRight size={16} /></button>
+                <div className="tutor-tags">
+                  {tutor.subjects.map((item) => <span key={item}>{item}</span>)}
+                  {tutor.teachingModes.map((item) => <span key={item}>{item}</span>)}
+                </div>
+                <div className="featured-card-meta">
+                  <span>{tutor.activeStudents} active students</span>
+                  <span>{tutor.lessons} lessons</span>
+                  <span>{tutor.languages.join(", ")}</span>
+                </div>
               </div>
+              <aside className="featured-booking-panel">
+                <strong>{money.format(tutor.hourlyRate)}/hr</strong>
+                <span>{tutor.nextSlot}</span>
+                <button className="primary" onClick={onStart}>Book trial</button>
+                <button className="secondary" onClick={onStart}>View profile</button>
+              </aside>
             </article>
           ))}
         </div>
       </section>
-      <section className="how-it-works">
+
+      <section className="landing-section proof-stories">
+        <div className="section-heading">
+          <p className="eyebrow">What families look for</p>
+          <h3>Simple proof before the first lesson.</h3>
+        </div>
+        <div className="testimonial-grid">
+          {[
+            ["Easy to compare", "Subject, price, schedule, and reviews sit together so parents can make a quick decision."],
+            ["Interview first", "Students can request a class with a clear learning goal before committing to regular lessons."],
+            ["Built for tutors too", "Tutors manage profile details, availability, booking requests, and earnings in one place."]
+          ].map(([title, text]) => (
+            <article key={title}>
+              <h4>{title}</h4>
+              <p>{text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="landing-section how-it-works standard-steps">
         <div>
           <span>01</span>
           <Search size={24} />
-          <h3>Find</h3>
+          <h3>Search</h3>
           <p>Filter by subject, city, home tuition, online lessons, schedule, and price.</p>
         </div>
         <div>
           <span>02</span>
-          <CalendarCheck size={24} />
-          <h3>Request</h3>
-          <p>Send a booking request with the learner goal so the tutor can prepare.</p>
+          <UserCheck size={24} />
+          <h3>Choose</h3>
+          <p>Review tutor qualifications, experience, ratings, and availability in one profile.</p>
         </div>
         <div>
           <span>03</span>
+          <CalendarCheck size={24} />
+          <h3>Connect</h3>
+          <p>Request an interview or lesson with the learner goal so the tutor can prepare.</p>
+        </div>
+        <div>
+          <span>04</span>
           <GraduationCap size={24} />
           <h3>Learn</h3>
           <p>Use an external meeting link or home tuition, then track payment and progress.</p>
         </div>
       </section>
-      <section className="final-cta">
+
+      <section className="landing-section audience-grid">
+        <InfoCard icon={<Users />} title="For students" text="Save tutors, request lessons, view session links, and track payment status." />
+        <InfoCard icon={<UserCheck />} title="For tutors" text="Manage profile, booking requests, upcoming sessions, and earnings." />
+        <InfoCard icon={<LayoutDashboard />} title="For admins" text="Verify tutors, monitor booking flow, and review revenue operations." />
+      </section>
+
+      <section className="final-cta standard-final">
         <div>
-          <p className="eyebrow">Ready for the next class?</p>
-          <h3>Launch the marketplace, compare tutors, and send the first request.</h3>
+          <p className="eyebrow">Ready to start?</p>
+          <h3>Find a tutor, meet first, then book with confidence.</h3>
+          <p>Search verified profiles or create your account to manage lessons, messages, and payments.</p>
+          <div className="final-proof">
+            <span><BadgeCheck size={16} /> Verified tutors</span>
+            <span><CalendarCheck size={16} /> Trial requests</span>
+            <span><CreditCard size={16} /> Payment tracking</span>
+          </div>
         </div>
         <div className="final-actions">
           <button className="hero-cta" onClick={onStart}>Find your tutor <ArrowUpRight size={20} /></button>
@@ -599,18 +602,36 @@ function SignupPage({
   return (
     <section className="signup-shell">
       <div className="signup-intro">
-        <p className="eyebrow">Registration</p>
-        <h3>Create the right profile from day one.</h3>
-        <p>
-          Tutors submit teaching, pricing, availability, and verification details. Students or parents submit learner,
-          grade, location, and learning need details so booking requests are useful immediately.
-        </p>
+        <div className="signup-visual" aria-hidden="true">
+          <img
+            src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=900&q=84"
+            alt=""
+          />
+          <span><ShieldCheck size={16} /> Safe matching</span>
+        </div>
+        <div>
+          <p className="eyebrow">Registration</p>
+          <h3>{signupRole === "student" ? "Create a learner profile that tutors can act on." : "Apply to teach with a profile parents can trust."}</h3>
+          <p>
+            {signupRole === "student"
+              ? "Tell tutors who is learning, what they need, and how they prefer to study so the first request is useful."
+              : "Share your subjects, rate, schedule, and verification details so students can compare you confidently."}
+          </p>
+        </div>
         <div className="role-switch">
           <button className={signupRole === "student" ? "active" : ""} onClick={() => { setSignupRole("student"); setSubmitted(false); }}>
-            <Users size={18} /> Student / parent
+            <Users size={18} />
+            <span>
+              <strong>Student / parent</strong>
+              <small>Find tutors and request lessons</small>
+            </span>
           </button>
           <button className={signupRole === "tutor" ? "active" : ""} onClick={() => { setSignupRole("tutor"); setSubmitted(false); }}>
-            <UserCheck size={18} /> Tutor
+            <UserCheck size={18} />
+            <span>
+              <strong>Tutor</strong>
+              <small>Apply, verify, and receive bookings</small>
+            </span>
           </button>
         </div>
         <div className="signup-proof">
@@ -618,9 +639,21 @@ function SignupPage({
           <span><CalendarCheck size={18} /> Booking-ready</span>
           <span><MessageSquare size={18} /> Messaging-ready</span>
         </div>
+        <div className="signup-steps">
+          <span className="active">Profile</span>
+          <span>Match</span>
+          <span>Book</span>
+        </div>
       </div>
 
       <form className="signup-form" onSubmit={submit}>
+        <div className="signup-form-head">
+          <div>
+            <p className="eyebrow">{signupRole === "student" ? "Student onboarding" : "Tutor onboarding"}</p>
+            <h3>{signupRole === "student" ? "Learner and contact details" : "Teaching and verification details"}</h3>
+          </div>
+          <span>{signupRole === "student" ? "Takes 2 minutes" : "Verification-ready"}</span>
+        </div>
         {signupRole === "student" ? <StudentSignupFields /> : <TutorSignupFields />}
         <button className="primary" type="submit">
           {signupRole === "student" ? "Create student profile" : "Submit tutor application"}
@@ -1103,3 +1136,4 @@ function StatusCards({
 }
 
 createRoot(document.getElementById("root")!).render(<App />);
+

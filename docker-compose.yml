@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: teacheroncall-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: teacher_on_call
+      POSTGRES_USER: teacher_on_call
+      POSTGRES_PASSWORD: teacher_on_call_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - teacheroncall-postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U teacher_on_call -d teacher_on_call"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  teacheroncall-postgres-data:

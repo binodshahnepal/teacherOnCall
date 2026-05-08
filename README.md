@@ -19,6 +19,18 @@ Homebrew was not installed because the machine requires administrator access for
 
 ## Run The Backend
 
+Start local PostgreSQL first:
+
+```sh
+docker compose up -d postgres
+```
+
+Database health check:
+
+```sh
+curl http://127.0.0.1:5087/api/health/database
+```
+
 ```sh
 DOTNET_CLI_HOME=.dotnet-home DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 .tools/dotnet/dotnet run --project src/TeacherOnCall.Api --urls http://127.0.0.1:5087
 ```
